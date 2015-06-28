@@ -18,8 +18,6 @@ import java.util.Timer;
 public class RequestTask extends AsyncTask<String, String, String> {
 
     public AfterAsyncTask delegate = null;
-    private Timer myTimer;
-    private MyTimerTask myTimerTask;
 
     @Override
     protected String doInBackground(String... uri) {
@@ -39,26 +37,9 @@ public class RequestTask extends AsyncTask<String, String, String> {
         return String.valueOf(value);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    @Override
-    protected void onCancelled(String s) {
-        super.onCancelled(s);
-    }
-
-    @Override
-    protected void onProgressUpdate(String... values) {
-        super.onProgressUpdate(values);
-//        delegate.onComplete(values[0]);
-    }
-
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         delegate.onComplete(result);
-        this.cancel(true);
-    //@wip
-//        myTimer = new Timer();
-//        myTimerTask = new MyTimerTask();
-//        myTimer.scheduleAtFixedRate(myTimerTask, 0, 6000);
     }
 }
