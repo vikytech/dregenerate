@@ -14,10 +14,10 @@ import it.works.it.dregenerate.R;
 
 public class MainActivity extends Activity implements AfterAsyncTask {
     private TextView value;
-    private int previousValue;
-    private int currentValue;
-    private static RequestTask requestTask;
-    private static Context context;
+    private double previousValue;
+    private double currentValue;
+    private RequestTask requestTask;
+    private Context context;
     private Timer timer = new Timer();
 
 
@@ -26,9 +26,10 @@ public class MainActivity extends Activity implements AfterAsyncTask {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initPolling();
+//        initPolling();
+        getCurrentValue();
         value = (TextView) findViewById(R.id.value);
-        previousValue = Integer.parseInt(String.valueOf(value.getText()));
+        previousValue = Double.parseDouble(String.valueOf(value.getText()));
         context=this;
     }
 
@@ -40,7 +41,11 @@ public class MainActivity extends Activity implements AfterAsyncTask {
             @Override
             public void run() {
                 System.out.println("Fetching weight form bottle ");
-                getCurrentValue();
+                try {
+                    getCurrentValue();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, delay, period);
     }
@@ -52,7 +57,7 @@ public class MainActivity extends Activity implements AfterAsyncTask {
     }
     @Override
     public void onComplete(String result) {
-        currentValue = Integer.parseInt(result);
+        currentValue = Double.parseDouble(result);
         System.out.println("Obtained weight is: " + currentValue);
         if (previousValue == currentValue) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(context);
@@ -61,13 +66,14 @@ public class MainActivity extends Activity implements AfterAsyncTask {
                     .create()
                     .show();
         } else {
-            this.value.setText(String.valueOf(currentValue));
+            if(!requestTask.isCancelled()) requestTask.cancel(true);
+            this.value.setText(String.valueOf(String.format("%.3f",currentValue)));
         }
         System.out.println("Completed...............");
     }
 
     public void refresh(View view) {
-        previousValue = Integer.parseInt(String.valueOf(value.getText()));
+        previousValue = Double.parseDouble(String.valueOf(value.getText()));
         try {
             getCurrentValue();
         } catch (Exception e) {

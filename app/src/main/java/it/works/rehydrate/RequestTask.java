@@ -24,13 +24,13 @@ public class RequestTask extends AsyncTask<String, String, String> {
         HttpResponse response = null;
         HttpClient httpClient = new DefaultHttpClient();
         String responseString = null;
-        int value = 0;
+        double value = 0;
         try {
             response = httpClient.execute(new HttpGet(new URI(uri[0])));
             HttpEntity entity = response.getEntity();
             responseString = EntityUtils.toString(entity, "UTF-8");
             JSONObject jsonObject = new JSONObject(responseString);
-            value = jsonObject.getInt("value");
+            value = jsonObject.getDouble("value");
         } catch (Exception e) {
             e.printStackTrace();
         }
